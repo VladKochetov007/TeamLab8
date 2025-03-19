@@ -224,6 +224,8 @@ class DigitalWatch(Watch):
     """Implementation of a digital watch."""
     
     def __init__(self, theme: Theme = LightTheme(), time_format: str = TimeFormat.HOURS_24):
+        if time_format not in [TimeFormat.HOURS_12, TimeFormat.HOURS_24]:
+            raise ValueError(f"Invalid time format. Must be either {TimeFormat.HOURS_12} or {TimeFormat.HOURS_24}")
         super().__init__(theme)
         self.time_format = time_format
         self._turtle = turtle.Turtle()
@@ -315,3 +317,18 @@ class AnalogWatchWithAlarm(AnalogWatch, WatchWithAlarm):
         """Update the watch and check for alarms."""
         super().update()
         self.check_and_trigger_alarm()
+
+
+def main():
+    """Demonstrate both analog and digital clock implementations."""
+    # Create and run analog clock
+    analog_clock = AnalogWatch(theme=DarkTheme())
+    analog_clock.run(update_interval=1.0)  # Update every second
+    
+    # Create and run digital clock (12-hour format)
+    digital_clock = DigitalWatch(theme=DarkTheme(), time_format=TimeFormat.HOURS_12)
+    digital_clock.run(update_interval=1.0)  # Update every second
+
+
+if __name__ == "__main__":
+    main()
