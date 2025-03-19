@@ -18,7 +18,14 @@ class Digit:
     
     def draw(self) -> None:
         """Draw the digit at the specified position with the given size."""
-        pass
+        # Set up turtle for drawing
+        self._turtle.penup()
+        self._turtle.goto(self.position)
+        self._turtle.color("black")
+        
+        # Draw the digit
+        font_size = int(20 * self.size)  # Scale font size based on the size parameter
+        self._turtle.write(str(self.value), align="center", font=("Arial", font_size, "normal"))
 
 
 class ClockFace:
@@ -34,11 +41,39 @@ class ClockFace:
     
     def setup(self) -> None:
         """Set up the clock face with all 12 digits."""
-        pass
+        import math
+        
+        # Create 12 digits around the clock face
+        for hour in range(1, 13):
+            # Calculate position for each digit
+            angle = math.radians(30 * (3 - hour))  # Start from 12 o'clock (90 degrees)
+            x = self.center[0] + (self.radius * 0.85) * math.cos(angle)
+            y = self.center[1] + (self.radius * 0.85) * math.sin(angle)
+            
+            # Create digit with calculated position
+            digit = Digit(hour, (x, y), size=1.2)
+            self.digits.append(digit)
     
     def draw(self) -> None:
         """Draw the complete clock face including all digits."""
-        pass
+        # Draw the outer circle
+        self._turtle.penup()
+        self._turtle.goto(self.center[0], self.center[1] - self.radius)
+        self._turtle.pendown()
+        self._turtle.circle(self.radius)
+        
+        # Draw hour markers
+        for _ in range(12):
+            self._turtle.penup()
+            self._turtle.goto(self.center[0], self.center[1])
+            self._turtle.setheading(_ * 30)
+            self._turtle.forward(self.radius * 0.9)
+            self._turtle.pendown()
+            self._turtle.forward(self.radius * 0.1)
+        
+        # Draw all digits
+        for digit in self.digits:
+            digit.draw()
 
 
 class Hand:
@@ -56,11 +91,25 @@ class Hand:
     
     def draw(self) -> None:
         """Draw the hand at the current angle."""
-        pass
+        self._turtle.clear()
+        self._turtle.penup()
+        self._turtle.goto(self.center)
+        
+        # Configure hand appearance
+        self._turtle.pensize(self.width)
+        self._turtle.color(self.color)
+        
+        # Point hand in correct direction (0 degrees is east, we want 0 to be north)
+        self._turtle.setheading(90 - self.angle)
+        
+        # Draw the hand
+        self._turtle.pendown()
+        self._turtle.forward(self.length)
     
     def update(self, angle: float) -> None:
         """Update the hand's position to the new angle."""
-        pass
+        self.angle = angle
+        self.draw()
 
 
 class Theme(Protocol):
